@@ -17,10 +17,11 @@ end
 
 local function dumpInventory()
     local s, data = turtle.inspectUp()
-    if not s then
+    if not s or not data["tags"]["c:chests"] then
         return false
     end
-    if not data["tags"]["c:chests"] then
+    s, data = turtle.inspectDown()
+    if not s or not data["tags"]["c:chests"] then
         return false
     end
     local fuelStacks = 0
