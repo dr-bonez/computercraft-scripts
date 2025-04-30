@@ -1,5 +1,5 @@
 local function getFuelValue(slot)
-    local data = turtle.getItemDetail()
+    local data = turtle.getItemDetail(slot)
     if data ~= nil then
         if data["name"] == "minecraft:coal" then
             return 80
