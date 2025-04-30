@@ -153,25 +153,31 @@ local function dumpInventory()
     for slot = 1, 16 do
         if turtle.getItemCount(slot) > 0 then
             local target = 'up'
-            if getFuelValue(slot) ~= 0 and fuelStacks < 3 then
-                fuelStacks = fuelStacks + 1
-                target = 'down'
-            elseif isTorch(slot) and torchStacks < 3 then
-                torchStacks = torchStacks + 1
-                target = 'down'
-            else
-                turtle.select(slot)
-                local res = false
-                if target == 'up' then
-                    res = turtle.dropUp()
-                elseif target == 'down' then
-                    res = turtle.dropDown()
+            if getFuelValue(slot) ~= 0 then
+                if fuelStacks < 2 then
+                    fuelStacks = fuelStacks + 1
+                    goto continue
                 end
-                if not res then
-                    return false
+                target = 'down'
+            elseif isTorch(slot) then
+                if torchStacks < 2 then
+                    torchStacks = torchStacks + 1
+                    goto continue
                 end
+                target = 'down'
+            end
+            turtle.select(slot)
+            local res = false
+            if target == 'up' then
+                res = turtle.dropUp()
+            elseif target == 'down' then
+                res = turtle.dropDown()
+            end
+            if not res then
+                return false
             end
         end
+        ::continue::
     end
     return true
 end
