@@ -20,7 +20,6 @@ local function placeTorch()
         if isTorch(slot) then
             turtle.select(slot)
             turtle.placeUp()
-            turtle.select(1)
             return true
         end
     end
@@ -53,23 +52,23 @@ local function isInventoryFull()
 end
 
 local function returnToStart(steps)
-    turtle.turnRight()
-    turtle.turnRight()
-
     while steps > 0 do
-        while turtle.detect() do
-            turtle.dig()
-        end
-        if turtle.forward() then
+        if turtle.back() then
             steps = steps - 1
+        else
+            print("Failed to move, attempting to dig")
+            turtle.turnRight()
+            turtle.turnRight()
+            while turtle.detect() do
+                turtle.dig()
+            end
+            turtle.turnRight()
+            turtle.turnRight()
         end
         if steps % 10 == 0 then
             placeTorch()
         end
     end
-
-    turtle.turnRight()
-    turtle.turnRight()
 end
 
 local function mineCorridor()
@@ -89,6 +88,13 @@ local function mineCorridor()
             break
         end
 
+        if steps > 1 and steps % 10 == 1 and not foundTorch then
+            if turtle.back() then
+                steps =
+                    placeTorch()
+            end
+        end
+
         while turtle.detect() do
             turtle.dig()
         end
@@ -101,15 +107,19 @@ local function mineCorridor()
         steps = steps + 1
 
         while turtle.detectUp() do
-            local s, data = turtle.inspectUp()
-            if s then
-                if data["name"] ~= "minecraft:wall_torch" then
-                    turtle.digUp()
+            if steps % 10 == 0 then
+                local s, data = turtle.inspectUp()
+                if s then
+                    if data["name"] ~= "minecraft:wall_torch" then
+                        turtle.digUp()
+                    else
+                        break
+                    end
                 else
                     break
                 end
             else
-                break
+                turtle.digUp()
             end
         end
     end
