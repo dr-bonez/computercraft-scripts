@@ -15,6 +15,23 @@ local function isTorch(slot)
     return data ~= nil and data["name"] == "minecraft:torch"
 end
 
+
+local function isWallTorch(target)
+    local s, data
+    if target == "up" then
+        s, data = turtle.inspectUp()
+    elseif target == 'down' then
+        s, data = turtle.inspectDown()
+    else
+        s, data = turtle.inspect()
+    end
+    if s then
+        return data["name"] == "minecraft:wall_torch"
+    else
+        return false
+    end
+end
+
 local function placeTorch()
     for slot = 1, 16 do
         if isTorch(slot) then
@@ -101,13 +118,8 @@ local function mineCorridor()
 
         while turtle.detectUp() do
             if steps % 10 == 0 then
-                local s, data = turtle.inspectUp()
-                if s then
-                    if data["name"] ~= "minecraft:wall_torch" then
-                        turtle.digUp()
-                    else
-                        break
-                    end
+                if not isWallTorch('up') then
+                    turtle.digUp()
                 else
                     break
                 end
@@ -180,5 +192,11 @@ while not isInventoryFull() do
     end
     if not refillFuelAndTorches() then
         print("Failed to refill inventory")
+    end
+    turtle.turnRight()
+    local stop = isWallTorch()
+    turtle.turnLeft()
+    if stop then
+        break
     end
 end
