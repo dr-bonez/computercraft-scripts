@@ -88,13 +88,6 @@ local function mineCorridor()
             break
         end
 
-        if steps > 1 and steps % 10 == 1 and not foundTorch then
-            if turtle.back() then
-                steps =
-                    placeTorch()
-            end
-        end
-
         while turtle.detect() do
             turtle.dig()
         end
