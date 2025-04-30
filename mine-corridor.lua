@@ -33,6 +33,10 @@ local function isWallTorch(target)
 end
 
 local function placeTorch()
+    local s, _ = turtle.inspectUp()
+    if s then
+        return false
+    end
     for slot = 1, 16 do
         if isTorch(slot) then
             turtle.select(slot)
