@@ -131,6 +131,10 @@ local function mineCorridor()
                 turtle.digUp()
             end
         end
+
+        while turtle.detectDown() do
+            turtle.digDown()
+        end
     end
 
     if steps > 0 then
